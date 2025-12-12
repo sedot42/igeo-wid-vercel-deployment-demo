@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import FastAPI, Path, Query
+from fastapi import FastAPI, HTTPException, Path, Query
 
 app = FastAPI()
 
@@ -17,13 +17,19 @@ def get_book_by_name(
     name: Annotated[str, Path(title="Name des Buchs", min_length=4)],
 ):
     """Gibt Buch nach Namen zurück."""
-    return [b for b in books if b["name"] == name].pop()  # Bug! Was passiert bei leerer Liste?
+    book = [b for b in books if b["name"] == name]
+    if len(book) > 0:
+        return book[0]
+    else:
+        raise HTTPException(status_code=404, detail="Buch wurde nicht gefunden.")
 
 
 @app.get("/books")
 def get_books(
     author: Annotated[str | None, Query(title="Author des Buchs")] = None,
-    year: Annotated[int | None, Query(title="Erscheinungsjahr des Buchs", gt=0, lt=2026)] = None,
+    year: Annotated[
+        int | None, Query(title="Erscheinungsjahr des Buchs", gt=0, lt=2026)
+    ] = None,
 ):
     """Gibt gefilterte Bücherliste zurück."""
     results = books
