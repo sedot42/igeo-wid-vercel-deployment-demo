@@ -1,13 +1,11 @@
+import os
 from typing import Annotated
 from fastapi import FastAPI, HTTPException, Path, Query
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-origins = [
-    "https://igeo-wid-frontend-test.vercel.app",
-    "http://localhost:5173",
-]
+origins = [os.getenv("FRONTEND_ORIGIN") or "", "http://localhost:5173"]
 
 app.add_middleware(
     CORSMiddleware,
