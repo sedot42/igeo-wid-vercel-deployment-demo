@@ -30,7 +30,7 @@ function App() {
   }, [backendUrl]);
 
   if (loading) {
-    return <div>Loading books...</div>;
+    return <div>Now loading books...</div>;
   }
 
   if (error) {
